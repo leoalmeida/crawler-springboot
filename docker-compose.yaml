@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: .\
+      dockerfile: Dockerfile
+    ports:
+      - 4567:4567
+    env_file: ".env"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USER: ${SPRING_DATASOURCE_USER}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PWD}
+    restart: on-failure
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
