@@ -1,15 +1,14 @@
 package space.lasf.crawler_app.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +16,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +23,7 @@ import lombok.NoArgsConstructor;
  * Entidade que representa um produto.
  */
 @Entity
-@Table(name  = "crawlers", indexes={@Index(name = "crawlers_key_idx", columnList = "search_key,crawler_status", unique = true)})
+@Table(name  = "crawlers", indexes={@Index(name = "crawlers_search_key_idx", columnList = "search_key", unique = true)})
 @Data
 @NoArgsConstructor
 public class Crawler {
@@ -46,7 +44,7 @@ public class Crawler {
     private String status;
 
     @Column(name = "urls")
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name = "crawler_urls", joinColumns = @JoinColumn(name = "crawler_id"))
     private Set<String> urls;
 
@@ -56,14 +54,30 @@ public class Crawler {
     @Column(name = "last_update", nullable = true)
     private LocalDateTime lastUpdate;
     
-    public void startProcess() {
+    public Crawler startProcess() {
         this.status = CrawlStatus.ACTIVE.name();
         this.startDate = LocalDateTime.now();
+        this.urls = new TreeSet<>();
+        return this;
     }
 
-    public void endProcess() {
-        this.status = CrawlStatus.DONE.name();
+    public Crawler endProcess() {
+        this.status = (CrawlStatus.ERROR.name().contentEquals(this.status))
+                ?this.status
+                :CrawlStatus.DONE.name();
         this.lastUpdate = LocalDateTime.now();
+        return this;
+    }
+    
+    public Crawler errorProcess() {
+        this.status = CrawlStatus.ERROR.name();
+        return this;
+    }
+
+    public Crawler addLink(String link){
+        this.urls.add(link);
+        this.lastUpdate = LocalDateTime.now();
+        return this;
     }
 
 }
