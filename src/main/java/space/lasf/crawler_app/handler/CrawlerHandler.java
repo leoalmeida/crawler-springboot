@@ -34,8 +34,6 @@ public class CrawlerHandler {
     private CrawlerRepository crawlerRepository;
 
 	public Crawler getLinks(String crawlingUrl, String url, Set<String> urls, Crawler request) {
-		LOGGER.info(MessageFormat.format("Quantidade pesquisada: [{0}]", urls.size()));
-		LOGGER.info(MessageFormat.format("Quantidade encontrada: [{0}]", request.getUrls().size()));
 		//checks if the same url is already visited
 		if(!urls.add(url) || urls.size()>1000){
 			LOGGER.info(MessageFormat.format("URL já pesquisada: [{0}]", url));
@@ -80,7 +78,8 @@ public class CrawlerHandler {
         Crawler result = (!text.contains(processEntity.getKeyword()))
 							?processEntity
 							:persistChanges(processEntity.addLink(url));
-		LOGGER.info(MessageFormat.format("Keyword encontrada: [{0}]", url));	
+		LOGGER.info(MessageFormat.format("found: [{0}]", result.getUrls().size()));
+		//LOGGER.info(MessageFormat.format("Keyword encontrada: [{0}]", url));	
 		return result;
 	
     }
