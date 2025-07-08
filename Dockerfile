@@ -1,12 +1,6 @@
-FROM maven:3.9.9
+FROM maven:3.8.5-openjdk-17-slim
 
-WORKDIR /
-COPY . .
-RUN mvn clean package -DskipTests
-
-#CMD mvn spring-boot:run
-
-FROM openjdk:17-jdk-slim
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+ADD . /usr/src/crawler
+WORKDIR /usr/src/crawler
+EXPOSE 4567
+ENTRYPOINT ["mvn", "clean", "verify", "exec:java"]
