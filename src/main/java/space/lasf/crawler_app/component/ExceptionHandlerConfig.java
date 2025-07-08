@@ -1,4 +1,4 @@
-package space.lasf.crawler_app.config;
+package space.lasf.crawler_app.component;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

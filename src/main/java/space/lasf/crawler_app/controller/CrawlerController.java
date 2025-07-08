@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import space.lasf.crawler_app.dto.CrawlDto;
 import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.service.ICrawlerService;
-import space.lasf.crawler_app.service.RequestService;
+import space.lasf.crawler_app.service.IRequestService;
 
 /**
  * Controller para gerenciamento de requests.
@@ -32,7 +32,7 @@ public class CrawlerController {
     Logger LOG = LoggerFactory.getLogger(CrawlerController.class);
 
     @Autowired
-    private RequestService requestService;
+    private IRequestService requestService;
 
     @Autowired
 	private ICrawlerService crawlerService;

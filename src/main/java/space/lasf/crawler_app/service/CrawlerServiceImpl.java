@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
 import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.handler.CrawlerHandler;
 

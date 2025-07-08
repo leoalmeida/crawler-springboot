@@ -2,12 +2,12 @@ package space.lasf.crawler_app.handler;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import jakarta.transaction.Transactional;
+import space.lasf.crawler_app.component.JsoupConnectionWrapper;
 import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.repository.CrawlerRepository;
 
@@ -33,43 +34,9 @@ public class CrawlerHandler {
     @Autowired
     private CrawlerRepository crawlerRepository;
 
-	public Crawler getLinks(String crawlingUrl, String url, Set<String> urls, Crawler request) {
-		//checks if the same url is already visited
-		if(!urls.add(url) || urls.size()>1000){
-			LOGGER.info(MessageFormat.format("URL já pesquisada: [{0}]", url));
-			return request;
-		}
-		Crawler resultCrawler = request;
-		try {
-			Document doc = Jsoup.connect(url).get();
-        	resultCrawler = findKeywordInText(url, doc.html(), resultCrawler);
-			Elements elements = doc.select("a");
-			for(Element element : elements){
+    @Autowired
+    private JsoupConnectionWrapper jsoupConnectionWrapper;
 
-				String nextUrl = element.absUrl("href");
-
-				//checks if the url is empty or starts '#'
-				if(!StringUtils.hasLength(nextUrl) || (StringUtils.hasLength(nextUrl) && ( nextUrl.contains("#"))))
-					continue;
-
-				//checks if the url have the pattern matching resources
-				if(FILTERS.matcher(nextUrl).matches()){
-					continue;
-				}
-				
-				//checks if the url is external or internal
-				if(nextUrl.startsWith(crawlingUrl)){
-					resultCrawler = getLinks(crawlingUrl, nextUrl, urls, resultCrawler);
-				}
-			}
-			return resultCrawler;
-		} catch (IOException e) {
-			LOGGER.error(MessageFormat.format("IOException Error: [{0}]", e.getMessage()));
-			return resultCrawler.errorProcess();
-		}
-	}
-
-    @Transactional
 	private Crawler persistChanges(Crawler processEntity) {
         return crawlerRepository.save(processEntity);
     }
@@ -84,8 +51,43 @@ public class CrawlerHandler {
 	
     }
 
+    @Transactional
 	public Crawler crawlResource(String link, Crawler request) {
-		Crawler result = getLinks(link, link, new HashSet<>(), request);
-        return persistChanges(result.endProcess());
+		Set<String> visitedUrls = new HashSet<>();
+		Queue<String> urlsToVisit = new LinkedList<>();
+
+		urlsToVisit.add(link);
+		visitedUrls.add(link);
+
+		Crawler currentRequestState = request;
+
+		while (!urlsToVisit.isEmpty() && visitedUrls.size() <= 1000) {
+			String currentUrl = urlsToVisit.poll();
+			LOGGER.info(MessageFormat.format("Crawling URL: [{0}]", currentUrl));
+
+			try {
+				Document doc = jsoupConnectionWrapper.connect(currentUrl);
+				currentRequestState = findKeywordInText(currentUrl, doc.html(), currentRequestState);
+
+				Elements elements = doc.select("a");
+				for (Element element : elements) {
+					String nextUrl = element.absUrl("href");
+
+					if (!StringUtils.hasLength(nextUrl) || nextUrl.contains("#") || FILTERS.matcher(nextUrl).matches()) {
+						continue;
+					}
+
+					// Check if it's an internal link and not visited yet
+					if (nextUrl.startsWith(link) && visitedUrls.add(nextUrl)) {
+						urlsToVisit.add(nextUrl);
+					}
+				}
+			} catch (IOException e) {
+				LOGGER.error(MessageFormat.format("IOException Error while crawling [{0}]: [{1}]", currentUrl, e.getMessage()));
+				// Continue to the next URL in the queue
+			}
+		}
+
+        return persistChanges(currentRequestState.endProcess());
     }
 }

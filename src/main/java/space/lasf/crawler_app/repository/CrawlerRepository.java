@@ -11,6 +11,6 @@ import space.lasf.crawler_app.entity.Crawler;
  */
 public interface CrawlerRepository extends JpaRepository<Crawler, String> {
     @Query("select c from Crawler c where c.searchKey = ?1")
-    Optional<Crawler> findRequestByKeyAndStatus(String searchKey);  
+    Optional<Crawler> findBySearchKey(String searchKey);
 
 }

@@ -10,7 +10,7 @@ import space.lasf.crawler_app.entity.Crawler;
 /**
  * Serviço para gerenciamento de clientes.
  */
-public interface RequestService {
+public interface IRequestService {
     
     Optional<Crawler> createRequest(String keyword);
     
