@@ -1,9 +1,7 @@
 package space.lasf.crawler_app.controller;
 
-
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import space.lasf.crawler_app.dto.CrawlDto;
 import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.service.ICrawlerService;
@@ -35,7 +32,7 @@ public class CrawlerController {
     private IRequestService requestService;
 
     @Autowired
-	private ICrawlerService crawlerService;
+    private ICrawlerService crawlerService;
 
     @GetMapping
     public ResponseEntity<List<CrawlDto>> getAllRequests() {
@@ -45,23 +42,21 @@ public class CrawlerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CrawlDto> getRequestById(@PathVariable final String id) {
-        return requestService.findRequestByKey(id)
+        return requestService
+                .findRequestByKey(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Map<String, String>> createRequest(
-            @RequestBody final Map<String, String> request) {
-        if (null == request || null == request.get("keyword") ){
+    public ResponseEntity<Map<String, String>> createRequest(@RequestBody final Map<String, String> request) {
+        if (null == request || null == request.get("keyword")) {
             throw new IllegalArgumentException("The request should have a valid keyword");
         }
-        Crawler result = requestService.createRequest(request.get("keyword"))
-                                        .orElseThrow();
+        Crawler result = requestService.createRequest(request.get("keyword")).orElseThrow();
         logger.info("Created crawl request with id {}", result.getSearchKey());
         crawlerService.crawlResource(result);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", result.getSearchKey()));
     }
-
 }

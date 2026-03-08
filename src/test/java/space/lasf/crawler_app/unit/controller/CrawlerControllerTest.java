@@ -1,6 +1,21 @@
 package space.lasf.crawler_app.unit.controller;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,22 +32,6 @@ import space.lasf.crawler_app.dto.CrawlDto;
 import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.service.ICrawlerService;
 import space.lasf.crawler_app.service.IRequestService;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class CrawlerControllerTest {
@@ -86,8 +85,7 @@ class CrawlerControllerTest {
     void getRequestById_whenNotFound_shouldReturnNotFound() throws Exception {
         when(requestService.findRequestByKey(anyString())).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/crawl/{id}", "xyz"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/crawl/{id}", "xyz")).andExpect(status().isNotFound());
     }
 
     @Test

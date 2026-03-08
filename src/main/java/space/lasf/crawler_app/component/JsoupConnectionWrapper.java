@@ -1,10 +1,9 @@
 package space.lasf.crawler_app.component;
 
+import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 /**
  * A wrapper around Jsoup's static connect method to make it testable.

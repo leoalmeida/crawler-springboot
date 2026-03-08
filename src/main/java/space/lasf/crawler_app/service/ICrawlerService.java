@@ -5,5 +5,4 @@ import space.lasf.crawler_app.entity.Crawler;
 public interface ICrawlerService {
 
     void crawlResource(final Crawler request);
-
 }

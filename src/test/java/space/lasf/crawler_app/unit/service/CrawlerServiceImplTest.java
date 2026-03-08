@@ -1,5 +1,8 @@
 package space.lasf.crawler_app.unit.service;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,9 +14,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.handler.CrawlerHandler;
 import space.lasf.crawler_app.service.CrawlerServiceImpl;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class CrawlerServiceImplTest {

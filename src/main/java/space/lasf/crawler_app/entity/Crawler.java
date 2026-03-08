@@ -1,9 +1,5 @@
 package space.lasf.crawler_app.entity;
 
-import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.TreeSet;
-
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -16,6 +12,9 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.TreeSet;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,9 +22,9 @@ import lombok.NoArgsConstructor;
  * Entidade que representa um produto.
  */
 @Entity
-@Table(name = "crawlers", indexes = {
-        @Index(name = "crawlers_search_key_idx", columnList = "search_key", unique = true)
-})
+@Table(
+        name = "crawlers",
+        indexes = {@Index(name = "crawlers_search_key_idx", columnList = "search_key", unique = true)})
 @Data
 @NoArgsConstructor
 public class Crawler {
@@ -39,13 +38,11 @@ public class Crawler {
     private String id;
 
     @Column(name = "search_key", unique = true)
-        @Size(min = SEARCH_KEY_SIZE, max = SEARCH_KEY_SIZE,
-            message = "Search key should have 8 characters")
+    @Size(min = SEARCH_KEY_SIZE, max = SEARCH_KEY_SIZE, message = "Search key should have 8 characters")
     private String searchKey;
 
     @Column(name = "keyword", nullable = false)
-        @Size(min = KEYWORD_MIN_SIZE, max = KEYWORD_MAX_SIZE,
-            message = "Keyword should have between 4 and 32 characters")
+    @Size(min = KEYWORD_MIN_SIZE, max = KEYWORD_MAX_SIZE, message = "Keyword should have between 4 and 32 characters")
     private String keyword;
 
     @Column(name = "crawler_status", nullable = false)
@@ -58,10 +55,10 @@ public class Crawler {
 
     @Column(name = "start_date", nullable = false)
     private LocalDateTime startDate;
-    
+
     @Column(name = "last_update", nullable = true)
     private LocalDateTime lastUpdate;
-    
+
     public Crawler startProcess() {
         this.status = CrawlStatus.ACTIVE.name();
         this.startDate = LocalDateTime.now();
@@ -70,13 +67,11 @@ public class Crawler {
     }
 
     public Crawler endProcess() {
-        this.status = (CrawlStatus.ERROR.name().contentEquals(this.status))
-                ?this.status
-                :CrawlStatus.DONE.name();
+        this.status = CrawlStatus.ERROR.name().contentEquals(this.status) ? this.status : CrawlStatus.DONE.name();
         this.lastUpdate = LocalDateTime.now();
         return this;
     }
-    
+
     public Crawler errorProcess() {
         this.status = CrawlStatus.ERROR.name();
         return this;
@@ -87,5 +82,4 @@ public class Crawler {
         this.lastUpdate = LocalDateTime.now();
         return this;
     }
-
 }

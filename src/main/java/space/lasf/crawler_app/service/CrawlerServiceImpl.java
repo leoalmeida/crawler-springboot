@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
 import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.handler.CrawlerHandler;
 
@@ -19,10 +18,10 @@ public class CrawlerServiceImpl implements ICrawlerService {
 
     @Autowired
     CrawlerHandler crawlerHandler;
-    
+
     @Value("${app.crawler.url}")
     private String crawlerUrl;
-	
+
     @Override
     @Async
     public void crawlResource(final Crawler request) {
@@ -30,5 +29,4 @@ public class CrawlerServiceImpl implements ICrawlerService {
         crawlerHandler.crawlResource(crawlerUrl, request);
         logger.info("End of processing request..." + request.getSearchKey());
     }
-
 }

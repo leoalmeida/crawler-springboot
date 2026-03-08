@@ -1,14 +1,14 @@
 package space.lasf.crawler_app.unit.mapper;
 
-import org.junit.jupiter.api.Test;
-import space.lasf.crawler_app.dto.CrawlDto;
-import space.lasf.crawler_app.entity.Crawler;
-import space.lasf.crawler_app.mapper.CrawlerMapper;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+import space.lasf.crawler_app.dto.CrawlDto;
+import space.lasf.crawler_app.entity.Crawler;
+import space.lasf.crawler_app.mapper.CrawlerMapper;
 
 class CrawlerMapperTest {
 

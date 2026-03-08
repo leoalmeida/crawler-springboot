@@ -1,6 +1,15 @@
 package space.lasf.crawler_app.integration;
 
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,24 +23,10 @@ import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.repository.CrawlerRepository;
 import space.lasf.crawler_app.service.ICrawlerService;
 
-import java.util.Map;
-
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @AutoConfigureMockMvc
 @Transactional
-@SpringBootTest(properties = {
-    "CRAWLER_URL=http://localhost:8081",
-    "DATABASE_DB=testdb",
-    "DATABASE_USER=sa",
-    "DATABASE_PWD="
-})
+@SpringBootTest(
+        properties = {"CRAWLER_URL=http://localhost:8081", "DATABASE_DB=testdb", "DATABASE_USER=sa", "DATABASE_PWD="})
 class CrawlerControllerIntegrationTests {
 
     @Autowired
@@ -88,13 +83,12 @@ class CrawlerControllerIntegrationTests {
         mockMvc.perform(get("/crawl/{id}", "abcdefgh"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is("abcdefgh")))
-            .andExpect(jsonPath("$.status", is("active")));
+                .andExpect(jsonPath("$.status", is("active")));
     }
 
     @Test
     void getRequestById_whenNotExists_shouldReturnNotFound() throws Exception {
-        mockMvc.perform(get("/crawl/{id}", "nonexistent"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/crawl/{id}", "nonexistent")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -114,8 +108,7 @@ class CrawlerControllerIntegrationTests {
         mockMvc.perform(get("/crawl"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-            .andExpect(jsonPath("$[0].id", anyOf(is("11111111"), is("22222222"))))
-            .andExpect(jsonPath("$[1].id", anyOf(is("11111111"), is("22222222"))));
+                .andExpect(jsonPath("$[0].id", anyOf(is("11111111"), is("22222222"))))
+                .andExpect(jsonPath("$[1].id", anyOf(is("11111111"), is("22222222"))));
     }
-    
 }

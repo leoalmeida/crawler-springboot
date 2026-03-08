@@ -1,10 +1,9 @@
 package space.lasf.crawler_app.component;
 
-import org.springframework.stereotype.Component;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CodeGenerator {

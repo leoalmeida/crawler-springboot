@@ -1,5 +1,11 @@
 package space.lasf.crawler_app.unit.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,13 +19,6 @@ import space.lasf.crawler_app.entity.CrawlStatus;
 import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.repository.CrawlerRepository;
 import space.lasf.crawler_app.service.RequestServiceImpl;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RequestServiceImplTest {

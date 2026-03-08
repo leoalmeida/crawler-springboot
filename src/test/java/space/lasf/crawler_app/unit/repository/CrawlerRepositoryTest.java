@@ -1,18 +1,16 @@
 package space.lasf.crawler_app.unit.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-
 import space.lasf.crawler_app.entity.CrawlStatus;
 import space.lasf.crawler_app.entity.Crawler;
 import space.lasf.crawler_app.repository.CrawlerRepository;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class CrawlerRepositoryTest {

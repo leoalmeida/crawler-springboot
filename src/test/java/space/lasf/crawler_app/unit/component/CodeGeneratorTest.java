@@ -1,13 +1,12 @@
 package space.lasf.crawler_app.unit.component;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-
 import space.lasf.crawler_app.component.CodeGenerator;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CodeGeneratorTest {
 
@@ -32,7 +31,6 @@ class CodeGeneratorTest {
         String code = codeGenerator.generateRandomCode();
         assertTrue(
                 code.matches("[a-zA-Z0-9]{8}"),
-                "Generated code '" + code + "' should only contain alphanumeric characters"
-        );
+                "Generated code '" + code + "' should only contain alphanumeric characters");
     }
 }

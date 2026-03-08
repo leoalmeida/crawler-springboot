@@ -12,8 +12,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 public class CrawlerAppApplication {
 
-	public static void main(final String[] args) {
-		SpringApplication.run(CrawlerAppApplication.class, args);
-	}
-
+    public static void main(final String[] args) {
+        SpringApplication.run(CrawlerAppApplication.class, args);
+    }
 }
