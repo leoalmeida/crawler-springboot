@@ -29,7 +29,7 @@ import space.lasf.crawler_app.service.IRequestService;
 @RequestMapping("/crawl")
 public class CrawlerController {
 
-    Logger LOG = LoggerFactory.getLogger(CrawlerController.class);
+    private final Logger logger = LoggerFactory.getLogger(CrawlerController.class);
 
     @Autowired
     private IRequestService requestService;
@@ -44,7 +44,7 @@ public class CrawlerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CrawlDto> getRequestById(@PathVariable String id) {
+    public ResponseEntity<CrawlDto> getRequestById(@PathVariable final String id) {
         return requestService.findRequestByKey(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -52,12 +52,14 @@ public class CrawlerController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Map<String, String>> createRequest(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, String>> createRequest(
+            @RequestBody final Map<String, String> request) {
         if (null == request || null == request.get("keyword") ){
             throw new IllegalArgumentException("The request should have a valid keyword");
         }
         Crawler result = requestService.createRequest(request.get("keyword"))
                                         .orElseThrow();
+        logger.info("Created crawl request with id {}", result.getSearchKey());
         crawlerService.crawlResource(result);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", result.getSearchKey()));
     }

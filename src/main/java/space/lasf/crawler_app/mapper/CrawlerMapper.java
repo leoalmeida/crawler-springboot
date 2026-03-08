@@ -12,10 +12,11 @@ import space.lasf.crawler_app.entity.Crawler;
 
 @Component
 public class CrawlerMapper {
-    public static CrawlDto toCrawlDto(Crawler response) {
+	public static CrawlDto toCrawlDto(final Crawler response) {
 
-		if (response == null)
+		if (response == null) {
 			return null;
+		}
 
 		return CrawlDto.builder()
                 .id(response.getSearchKey())

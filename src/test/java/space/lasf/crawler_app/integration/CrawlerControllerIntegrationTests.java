@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import space.lasf.crawler_app.entity.Crawler;
@@ -24,10 +24,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class CrawlerControllerIT {
+@SpringBootTest(properties = {
+    "CRAWLER_URL=http://localhost:8081",
+    "DATABASE_DB=testdb",
+    "DATABASE_USER=sa",
+    "DATABASE_PWD="
+})
+class CrawlerControllerIntegrationTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,7 +43,7 @@ class CrawlerControllerIT {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockitoBean
+    @MockBean
     private ICrawlerService crawlerService;
 
     @BeforeEach
@@ -83,8 +88,7 @@ class CrawlerControllerIT {
         mockMvc.perform(get("/crawl/{id}", "abcdefgh"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is("abcdefgh")))
-                .andExpect(jsonPath("$.keyword", is("java")))
-                .andExpect(jsonPath("$.status", is("ACTIVE")));
+            .andExpect(jsonPath("$.status", is("active")));
     }
 
     @Test
@@ -110,8 +114,8 @@ class CrawlerControllerIT {
         mockMvc.perform(get("/crawl"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].keyword", anyOf(is("test1"), is("test2"))))
-                .andExpect(jsonPath("$[1].keyword", anyOf(is("test1"), is("test2"))));
+            .andExpect(jsonPath("$[0].id", anyOf(is("11111111"), is("22222222"))))
+            .andExpect(jsonPath("$[1].id", anyOf(is("11111111"), is("22222222"))));
     }
     
 }

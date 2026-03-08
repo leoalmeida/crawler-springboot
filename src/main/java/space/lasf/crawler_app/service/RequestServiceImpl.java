@@ -20,6 +20,9 @@ import space.lasf.crawler_app.repository.CrawlerRepository;
  */
 @Service
 public class RequestServiceImpl implements IRequestService {
+
+    private static final int KEYWORD_MIN_SIZE = 4;
+    private static final int KEYWORD_MAX_SIZE = 32;
  
     @Autowired
     private CrawlerRepository crawlRepository;
@@ -29,8 +32,10 @@ public class RequestServiceImpl implements IRequestService {
     
     @Override
     @Transactional
-    public Optional<Crawler> createRequest(String keyword) {
-        if (null==keyword || keyword.isEmpty() || keyword.trim().length() < 4 || keyword.trim().length() > 32){
+    public Optional<Crawler> createRequest(final String keyword) {
+        if (null == keyword || keyword.isEmpty()
+                || keyword.trim().length() < KEYWORD_MIN_SIZE
+                || keyword.trim().length() > KEYWORD_MAX_SIZE) {
             throw new IllegalArgumentException("The keyword should have between 4 and 32 characteres");
         }
 
@@ -50,8 +55,8 @@ public class RequestServiceImpl implements IRequestService {
 
     @Override
     @Transactional
-    public Crawler endRequest(Crawler request){
-        if (null==request){
+    public Crawler endRequest(final Crawler request) {
+        if (null == request) {
             throw new IllegalArgumentException("The request should be active");
         }
         request.endProcess();
@@ -61,7 +66,7 @@ public class RequestServiceImpl implements IRequestService {
 
     @Override
     @Transactional(readOnly = true, isolation = Isolation.SERIALIZABLE)
-    public Optional<CrawlDto> findRequestByKey(String key) {
+    public Optional<CrawlDto> findRequestByKey(final String key) {
         return crawlRepository.findBySearchKey(key)
                         .map(CrawlerMapper::toCrawlDto);
     }

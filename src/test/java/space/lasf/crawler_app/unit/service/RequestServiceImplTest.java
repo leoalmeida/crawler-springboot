@@ -55,7 +55,7 @@ class RequestServiceImplTest {
 
             assertEquals(keyword, savedCrawler.getKeyword());
             assertEquals(expectedCode, savedCrawler.getSearchKey());
-            assertEquals(CrawlStatus.ACTIVE, savedCrawler.getStatus());
+            assertEquals(CrawlStatus.ACTIVE.name(), savedCrawler.getStatus());
             verify(codeGenerator).generateRandomCode();
             verify(crawlerRepository).save(any(Crawler.class));
         }
@@ -101,7 +101,7 @@ class RequestServiceImplTest {
             Crawler result = requestService.endRequest(crawler);
 
             // Assert
-            assertEquals(CrawlStatus.DONE, result.getStatus());
+            assertEquals(CrawlStatus.DONE.name(), result.getStatus());
             assertNotNull(result.getLastUpdate());
             verify(crawlerRepository).save(crawler);
         }
@@ -121,6 +121,7 @@ class RequestServiceImplTest {
         Crawler crawler = new Crawler();
         crawler.setSearchKey(key);
         crawler.setKeyword("test");
+        crawler.startProcess();
         crawler.setStatus(CrawlStatus.ACTIVE.name());
         when(crawlerRepository.findBySearchKey(key)).thenReturn(Optional.of(crawler));
 
@@ -130,7 +131,7 @@ class RequestServiceImplTest {
         // Assert
         assertTrue(result.isPresent());
         assertEquals(key, result.get().getId());
-        assertEquals("ACTIVE", result.get().getStatus());
+        assertEquals("active", result.get().getStatus());
     }
 
     @Test
@@ -139,8 +140,12 @@ class RequestServiceImplTest {
         // Arrange
         Crawler crawler1 = new Crawler();
         crawler1.setSearchKey("key1");
+        crawler1.setKeyword("keyword1");
+        crawler1.startProcess();
         Crawler crawler2 = new Crawler();
         crawler2.setSearchKey("key2");
+        crawler2.setKeyword("keyword2");
+        crawler2.startProcess();
         when(crawlerRepository.findAll()).thenReturn(List.of(crawler1, crawler2));
 
         // Act

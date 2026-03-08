@@ -1,14 +1,17 @@
 package space.lasf.crawler_app.unit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import space.lasf.crawler_app.component.ExceptionHandlerConfig;
 import space.lasf.crawler_app.controller.CrawlerController;
 import space.lasf.crawler_app.dto.CrawlDto;
 import space.lasf.crawler_app.entity.Crawler;
@@ -31,29 +34,35 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CrawlerController.class)
+@ExtendWith(MockitoExtension.class)
 class CrawlerControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockitoBean
+    @Mock
     private IRequestService requestService;
 
-    @MockitoBean
+    @Mock
     private ICrawlerService crawlerService;
+
+    @InjectMocks
+    private CrawlerController crawlerController;
+
+    private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() {
+        objectMapper = new ObjectMapper();
+        mockMvc = MockMvcBuilders.standaloneSetup(crawlerController)
+                .setControllerAdvice(new ExceptionHandlerConfig())
+                .build();
+    }
 
     @Test
     @DisplayName("GET /crawl - Should return all requests")
     void getAllRequests_shouldReturnListOfDtos() throws Exception {
-        // Arrange
-        CrawlDto dto = CrawlDto.builder().id("123").status("DONE").build();
+        CrawlDto dto = CrawlDto.builder().id("123").status("done").build();
         when(requestService.findAllRequests()).thenReturn(List.of(dto));
 
-        // Act & Assert
         mockMvc.perform(get("/crawl"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -63,24 +72,20 @@ class CrawlerControllerTest {
     @Test
     @DisplayName("GET /crawl/{id} - Should return request when found")
     void getRequestById_whenFound_shouldReturnDto() throws Exception {
-        // Arrange
-        CrawlDto dto = CrawlDto.builder().id("abc").status("ACTIVE").build();
+        CrawlDto dto = CrawlDto.builder().id("abc").status("active").build();
         when(requestService.findRequestByKey("abc")).thenReturn(Optional.of(dto));
 
-        // Act & Assert
         mockMvc.perform(get("/crawl/{id}", "abc"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is("abc")))
-                .andExpect(jsonPath("$.status", is("ACTIVE")));
+                .andExpect(jsonPath("$.status", is("active")));
     }
 
     @Test
     @DisplayName("GET /crawl/{id} - Should return 404 when not found")
     void getRequestById_whenNotFound_shouldReturnNotFound() throws Exception {
-        // Arrange
         when(requestService.findRequestByKey(anyString())).thenReturn(Optional.empty());
 
-        // Act & Assert
         mockMvc.perform(get("/crawl/{id}", "xyz"))
                 .andExpect(status().isNotFound());
     }
@@ -88,32 +93,29 @@ class CrawlerControllerTest {
     @Test
     @DisplayName("POST /crawl - Should create request and return ID")
     void createRequest_withValidBody_shouldReturnCreated() throws Exception {
-        // Arrange
         String keyword = "java testing";
         Map<String, String> requestBody = Map.of("keyword", keyword);
 
         Crawler createdCrawler = new Crawler();
-        createdCrawler.setSearchKey("new-id");
+        createdCrawler.setSearchKey("new-id1a");
         createdCrawler.setKeyword(keyword);
+        createdCrawler.startProcess();
 
         when(requestService.createRequest(keyword)).thenReturn(Optional.of(createdCrawler));
         doNothing().when(crawlerService).crawlResource(any(Crawler.class));
 
-        // Act & Assert
         mockMvc.perform(post("/crawl")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is("new-id")));
+                .andExpect(jsonPath("$.id", is("new-id1a")));
     }
 
     @Test
     @DisplayName("POST /crawl - Should return 400 for request without keyword")
     void createRequest_withoutKeyword_shouldReturnBadRequest() throws Exception {
-        // Arrange
         Map<String, String> requestBody = Collections.emptyMap();
 
-        // Act & Assert
         mockMvc.perform(post("/crawl")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestBody)))

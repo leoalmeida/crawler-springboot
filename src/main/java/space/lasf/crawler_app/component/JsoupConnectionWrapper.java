@@ -12,7 +12,7 @@ import java.io.IOException;
 @Component
 public class JsoupConnectionWrapper {
 
-    public Document connect(String url) throws IOException {
+    public Document connect(final String url) throws IOException {
         return Jsoup.connect(url).get();
     }
 }

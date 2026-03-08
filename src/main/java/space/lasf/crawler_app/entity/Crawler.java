@@ -23,28 +23,36 @@ import lombok.NoArgsConstructor;
  * Entidade que representa um produto.
  */
 @Entity
-@Table(name  = "crawlers", indexes={@Index(name = "crawlers_search_key_idx", columnList = "search_key", unique = true)})
+@Table(name = "crawlers", indexes = {
+        @Index(name = "crawlers_search_key_idx", columnList = "search_key", unique = true)
+})
 @Data
 @NoArgsConstructor
 public class Crawler {
+
+    private static final int SEARCH_KEY_SIZE = 8;
+    private static final int KEYWORD_MIN_SIZE = 4;
+    private static final int KEYWORD_MAX_SIZE = 32;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(name = "search_key", unique = true)
-    @Size(min = 8, max = 8, message = "Search key should have 8 characters")
+        @Size(min = SEARCH_KEY_SIZE, max = SEARCH_KEY_SIZE,
+            message = "Search key should have 8 characters")
     private String searchKey;
 
     @Column(name = "keyword", nullable = false)
-    @Size(min = 4, max = 32, message = "Keyword should have between 4 and 32 characters")
+        @Size(min = KEYWORD_MIN_SIZE, max = KEYWORD_MAX_SIZE,
+            message = "Keyword should have between 4 and 32 characters")
     private String keyword;
 
     @Column(name = "crawler_status", nullable = false)
     private String status;
 
     @Column(name = "urls")
-    @ElementCollection(fetch=FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "crawler_urls", joinColumns = @JoinColumn(name = "crawler_id"))
     private Set<String> urls;
 
@@ -74,7 +82,7 @@ public class Crawler {
         return this;
     }
 
-    public Crawler addLink(String link){
+    public Crawler addLink(final String link) {
         this.urls.add(link);
         this.lastUpdate = LocalDateTime.now();
         return this;

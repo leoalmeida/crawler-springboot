@@ -30,6 +30,7 @@ class CrawlerRepositoryTest {
         Crawler crawler = new Crawler();
         crawler.setSearchKey("test-key");
         crawler.setKeyword("test-keyword");
+        crawler.startProcess();
         crawler.setStatus(CrawlStatus.ACTIVE.name());
         entityManager.persistAndFlush(crawler);
 

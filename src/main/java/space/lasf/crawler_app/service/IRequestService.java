@@ -12,11 +12,11 @@ import space.lasf.crawler_app.entity.Crawler;
  */
 public interface IRequestService {
     
-    Optional<Crawler> createRequest(String keyword);
+    Optional<Crawler> createRequest(final String keyword);
     
-    Crawler endRequest(Crawler request);
+    Crawler endRequest(final Crawler request);
 
-    Optional<CrawlDto> findRequestByKey(String key);
+    Optional<CrawlDto> findRequestByKey(final String key);
     
     List<CrawlDto> findAllRequests();
 }

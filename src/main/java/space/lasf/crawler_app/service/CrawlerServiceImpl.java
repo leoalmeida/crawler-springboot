@@ -15,20 +15,20 @@ import space.lasf.crawler_app.handler.CrawlerHandler;
  */
 @Service
 public class CrawlerServiceImpl implements ICrawlerService {
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	CrawlerHandler crawlerHandler;
+    @Autowired
+    CrawlerHandler crawlerHandler;
     
     @Value("${app.crawler.url}")
     private String crawlerUrl;
 	
-	@Override
+    @Override
     @Async
-	public void crawlResource(Crawler request) {
+    public void crawlResource(final Crawler request) {
         logger.info("Starting request..." + request.getSearchKey());
-        crawlerHandler.crawlResource(crawlerUrl,request);
+        crawlerHandler.crawlResource(crawlerUrl, request);
         logger.info("End of processing request..." + request.getSearchKey());
-	}
+    }
 
 }
