@@ -1,0 +1,32 @@
+name: Script de workflow para o Frontend do projeto
+
+on:
+  workflow_call:
+
+jobs:
+  #code-quality-frontend:
+  #  uses: ./.github/workflows/code-quality.yml
+  #  secrets: inherit
+  
+  #test-frontend:
+  #  uses: ./.github/workflows/testes-frontend.yml
+  #  secrets: inherit
+
+  build-frontend:
+    uses: ./.github/workflows/build-frontend.yml
+    secrets: inherit
+
+  #zap-scan:
+  #  needs: build-project
+  #  uses: ./.github/workflows/zapscan.yml
+  #  secrets: inherit
+  
+  #docker:
+  #  needs: zap-scan
+  #  uses: ./.github/workflows/docker.yml
+  #  secrets: inherit
+  
+  #deploy_google:
+  #  needs: docker
+  #  uses: ./.github/workflows/release-gcloud.yml
+  #  secrets: inherit
