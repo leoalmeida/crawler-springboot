@@ -12,7 +12,7 @@ jobs:
     secrets: inherit
   
   test-backend:
-    needs: [code-quality-backend]
+    needs: [code-quality]
     uses: ./.github/workflows/testes-backend.yml
     secrets: inherit
 
