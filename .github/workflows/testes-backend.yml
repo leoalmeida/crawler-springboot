@@ -21,7 +21,7 @@ jobs:
       - name: Run tests of Module
         run: mvn -B -f ./pom.xml test
 
-      -name: Run Verify to Module
+      - name: Run Verify to Module
         run: mvn -B -f ./pom.xml verify
       
       - name: Run Code Quality Analysis
