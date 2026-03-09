@@ -1,13 +1,15 @@
-name: CI
+name: Workflow de CI
 
-on:
+#on:
+#  workflow_call:
+on: 
   pull_request:
   push:
     branches:
       - main
 
 jobs:
-  code-quality-backend:
+  code-quality:
     uses: ./.github/workflows/code-quality.yml
     secrets: inherit
   
