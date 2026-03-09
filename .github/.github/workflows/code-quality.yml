@@ -18,7 +18,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       
-      - name: Run Checkstyle
+      - name: Run Spotless to fix patterns
         run: mvn -B -f ./pom.xml spotless:apply
 
       - name: Compile Backend Module
@@ -33,10 +33,10 @@ jobs:
       - name: Run PMD check
         run: mvn -B -f ./pom.xml pmd:check
 
-      - name: generate PMD report
+      - name: Generate PMD report
         run: mvn -B -f ./pom.xml pmd:pmd
       
-      - name: Run spotbugs check
+      - name: Run SpotBugs check
         run: mvn -B -f ./pom.xml spotbugs:check
 
       - name: Generate SpotBugs report
