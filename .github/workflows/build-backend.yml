@@ -15,18 +15,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build backend module
-        run: mvn -B -f backend-module/pom.xml clean package -DskipTests
-      - name: Run Integration Tests
-        run: mvn -B -f backend-module/pom.xml verify
+        run: mvn -B -f ./pom.xml clean package -DskipTests
       - name: Upload Backend Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: backend-jar
-          path: backend-module/target/*.jar
-          retention-days: 1
-      - name: Upload EJB Artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: ejb-module-jar
-          path: ejb-module/target/*.jar
+          name: crowler-springboot-jar
+          path: ./target/*.jar
           retention-days: 1

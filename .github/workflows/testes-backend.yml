@@ -18,30 +18,18 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Compile EJB Module
-        run: mvn -B -f ejb-module/pom.xml clean install -DskipTests
-      - name: Run EJB Module Unit Tests
-        run: mvn -B -f ejb-module/pom.xml test
+      - name: Run tests of Module
+        run: mvn -B -f ./pom.xml test
 
-      - name: Compile Backend Module
-        run: mvn -B -f backend-module/pom.xml clean package -DskipTests
-      - name: Run Backend-Module BeneficioEjbIntegrationTest
-        run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioEjbIntegrationTest test
-      - name: Run Backend-Module BeneficioRepositoryIntegrationTest
-        run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioRepositoryIntegrationTest test
-      - name: Run Backend-Module TransferenciaServiceTest
-        run: mvn -B -f backend-module/pom.xml -Dtest=TransferenciaServiceTest test
-      - name: Run Backend-Module BeneficioControllerTest
-        run: mvn -B -f backend-module/pom.xml -Dtest=BeneficioControllerTest test
-      - name: Run Backend-Module BackendApplicationTests
-        run: mvn -B -f backend-module/pom.xml -Dtest=BackendApplicationTests test
-
+      -name: Run Verify to Module
+        run: mvn -B -f ./pom.xml verify
+      
       - name: Run Code Quality Analysis
-        run: mvn -B -f backend-module/pom.xml jacoco:report
+        run: mvn -B -f ./pom.xml jacoco:report
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v6
         with:
           name: coverage-report
-          path: backend-module/target/site/jacoco/
+          path: ./target/site/jacoco/
           retention-days: 1
