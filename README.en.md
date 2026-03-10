@@ -6,43 +6,43 @@
 ![Spring Boot](https://img.shields.io/badge/spring--boot-3.5.x-6DB33F)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 
-Crawler web assíncrono com Spring Boot, API REST e persistencia com JPA/H2 para controle de jobs e resultados.
+Asynchronous web crawler built with Spring Boot, REST API, and JPA/H2 persistence for job tracking and results.
 
-## Sumario
+## Table of Contents
 
-- [Visao Geral](#visao-geral)
-- [Requisitos](#requisitos)
-- [Configuracao](#configuracao)
-- [Como Rodar](#como-rodar)
+- [Overview](#overview)
+- [Requirements](#requirements)
+- [Configuration](#configuration)
+- [How to Run](#how-to-run)
 - [API](#api)
-- [Testes e Qualidade](#testes-e-qualidade)
+- [Tests and Quality](#tests-and-quality)
 - [Docker](#docker)
-- [Estrutura](#estrutura)
+- [Structure](#structure)
 - [Troubleshooting](#troubleshooting)
 
-## Visao Geral
+## Overview
 
-- endpoint principal em `/crawl`
-- processamento assíncrono de rastreamento
-- estrategia iterativa para navegacao de links
-- base H2 em memoria para execucao local
+- main endpoint under `/crawl`
+- asynchronous crawling execution
+- iterative crawling strategy for links
+- in-memory H2 database for local runs
 
-## Requisitos
+## Requirements
 
 - JDK 17+
-- Maven 3.9+ (ou `mvnw`)
-- Docker (opcional)
+- Maven 3.9+ (or `mvnw`)
+- Docker (optional)
 
-## Configuracao
+## Configuration
 
-`application.properties` usa variaveis de ambiente:
+`application.properties` expects these environment variables:
 
-- `CRAWLER_URL` (obrigatoria): URL base a ser rastreada
-- `DATABASE_DB` (obrigatoria): nome da base H2 em memoria
-- `DATABASE_USER` (obrigatoria): usuario da base
-- `DATABASE_PWD` (obrigatoria): senha da base
+- `CRAWLER_URL` (required): target base URL to crawl
+- `DATABASE_DB` (required): in-memory H2 database name
+- `DATABASE_USER` (required): database username
+- `DATABASE_PWD` (required): database password
 
-Exemplo no PowerShell:
+PowerShell example:
 
 ```powershell
 $env:CRAWLER_URL="https://example.com"
@@ -51,9 +51,9 @@ $env:DATABASE_USER="sa"
 $env:DATABASE_PWD=""
 ```
 
-## Como Rodar
+## How to Run
 
-Com Maven Wrapper:
+With Maven Wrapper:
 
 ```powershell
 Set-Location "c:\Users\leo_a\projetos\crawler-springboot"
@@ -61,13 +61,13 @@ Set-Location "c:\Users\leo_a\projetos\crawler-springboot"
 .\mvnw.cmd spring-boot:run
 ```
 
-A aplicacao sobe em `http://localhost:8081`.
+Application runs at `http://localhost:8081`.
 
 ## API
 
 ### `POST /crawl`
 
-Cria um novo job.
+Creates a new job.
 
 Request:
 
@@ -87,27 +87,27 @@ Response `201`:
 
 ### `GET /crawl/{id}`
 
-Retorna status e URLs coletadas para um job.
+Returns status and collected URLs for a single job.
 
 ### `GET /crawl`
 
-Lista todos os jobs cadastrados.
+Lists all submitted jobs.
 
-## Testes e Qualidade
+## Tests and Quality
 
-Rodar testes unitarios + integrados:
+Run unit + integration tests:
 
 ```powershell
 .\mvnw.cmd test
 ```
 
-Rodar validacao completa:
+Run full validation pipeline:
 
 ```powershell
 .\mvnw.cmd verify
 ```
 
-Formatar codigo:
+Format code:
 
 ```powershell
 .\mvnw.cmd spotless:apply
@@ -115,22 +115,22 @@ Formatar codigo:
 
 ## Docker
 
-Com `docker compose`:
+Using `docker compose`:
 
 ```powershell
 docker compose up --build
 ```
 
-O `docker-compose.yaml` usa `.env` para injetar variaveis.
+`docker-compose.yaml` reads values from `.env`.
 
-Execucao direta com Dockerfile:
+Direct Dockerfile usage:
 
 ```powershell
 docker build -t crawler-springboot .
 docker run --rm -p 8081:8081 -e CRAWLER_URL="https://example.com" -e DATABASE_DB="crawlerdb" -e DATABASE_USER="sa" -e DATABASE_PWD="" crawler-springboot
 ```
 
-## Estrutura
+## Structure
 
 ```text
 crawler-springboot/
@@ -153,6 +153,6 @@ crawler-springboot/
 
 ## Troubleshooting
 
-- Falha no startup por placeholder nao resolvido: confirme variaveis `CRAWLER_URL`, `DATABASE_DB`, `DATABASE_USER`, `DATABASE_PWD`.
-- Porta ocupada em `8081`: altere `server.port` em `application.properties`.
-- Falhas em teste por contexto: execute `.\mvnw.cmd clean test`.
+- Startup fails due to unresolved placeholders: ensure `CRAWLER_URL`, `DATABASE_DB`, `DATABASE_USER`, `DATABASE_PWD` are set.
+- Port `8081` already in use: change `server.port` in `application.properties`.
+- Context/test failures: run `.\mvnw.cmd clean test`.
